@@ -32,6 +32,16 @@ app.use(express.static('public'));
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
+const middleware = (req,res, next) => {
+    if(!req.files || req.body.title) {
+        return res.redirect("/")
+    }
+    console.log("Je suis un Middleware");
+    next()
+}
+
+app.use("/articles/post", middleware)
+
 
 // methode Get sur page d'acceuil index.handlebars "/"
 app.get("/", async (req, res) => {
@@ -48,17 +58,17 @@ app.get("/contact", (req, res) => {
 
 // Page articles
 
-app.get("/articles/:_id", async (req, res) => {
-    const article = await Post.findById(req.params._id)
-    res.render("articles", {
-        article: article
-    })
-})
-
 // Ajoute articledb.
-app.get("/article/add", (req, res) => {
+app.get("/articles/add", (req, res) => {
     res.render("article/add")
 })
+
+app.get("/articles/:_id", async (req, res) => {
+    const article = await Post.findById(req.params._id)
+    res.render("articles", {article: article})
+})
+
+
 
 // POST
 
@@ -85,8 +95,7 @@ app.post("/articles/post", (req, res) => {
 // Port du serveur
 
 app.listen(port, function () {
-    console.log(`écoute le port ${port}, lancé à ${new Date().toLocaleString()}`)
-
+    console.log(`Le serveur tourne sur le port ${port}, lancé à ${new Date().toLocaleString()}`)
 })
 
 
