@@ -6,7 +6,19 @@ const fileUpload = require("express-fileupload")
 const bodyParser = require("body-parser")
 const Handlebars = require("handlebars")
 const MomentHandler = require("handlebars.moment")
-const path = require("path")
+
+
+// Controler //
+// Articles
+const articleSingleController = require('./controllers/articleSingle')
+const articleAddController =require('./controllers/articleAdd')
+const articlePostController =require ('./controllers/articlePost')
+const homePage = require ('./controllers/homePage')
+// USER 
+const userCreate = require('./controllers/userCreate')
+const userRegister = require('./controllers/userRegister')
+const userLogin = require('./controllers/userLogin')
+const userLoginAuth = require('./controllers/userLoginAuth')
 
 MomentHandler.registerHelpers(Handlebars);
 
@@ -23,7 +35,6 @@ app.use(fileUpload())
 mongoose.connect('mongodb://localhost:27017/blog')
 
 // Post
-const Post = require("./database/models/article")
 
 app.use(express.static('public'));
 
@@ -32,65 +43,32 @@ app.use(express.static('public'));
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
-const middleware = (req,res, next) => {
-    if(!req.files || req.body.title) {
-        return res.redirect("/")
-    }
-    console.log("Je suis un Middleware");
-    next()
-}
-
-app.use("/articles/post", middleware)
+const articleValidPost = require('./middleware/articleValidPost')
+ 
+ // s'il y a un post sur url 'article/post' applique le middleware
+app.use("/articles/post", articleValidPost)
 
 
 // methode Get sur page d'acceuil index.handlebars "/"
-app.get("/", async (req, res) => {
-    //attend le retour de la requete pour afficher le contenu de la BDD
-    const posts = await Post.find({})
-    res.render("index", {
-        posts: posts
-    }) // affiche la collection
-})
+app.get("/", homePage) // affiche la collection
 
+// Page articles //
+// Ajoute articledb.
+app.get("/articles/add", articleAddController)
+app.get("/articles/:_id", articleSingleController)
+app.post("/articles/post", articlePostController)
+
+// Users (tu mets le chemin que tu veux) 
+app.get("/user/create", userCreate)
+app.post("/user/register", userRegister)
+app.get('/user/login', userLogin)
+app.post('/user/loginAuth', userLoginAuth)
+
+// Contact
 app.get("/contact", (req, res) => {
     res.render("contact")
 })
 
-// Page articles
-
-// Ajoute articledb.
-app.get("/articles/add", (req, res) => {
-    res.render("article/add")
-})
-
-app.get("/articles/:_id", async (req, res) => {
-    const article = await Post.findById(req.params._id)
-    res.render("articles", {article: article})
-})
-
-
-
-// POST
-
-app.post("/articles/post", (req, res) => {
-
-    // envoyer img dans dossier static articles 
-    // récupère l'image 
-    const {image} = req.files
-    const uploadFile = path.resolve(__dirname, 'public/articles', image.name)
-
-    // afficher image  
-    image.mv(uploadFile, (error) => {
-        Post.create(
-            {
-            ...req.body, 
-            image : `/articles/${image.name}`
-            }
-            ,(error, post) => {
-            res.redirect("/")
-        })
-    })
-})
 
 // Port du serveur
 
