@@ -4,9 +4,7 @@ const exphbs = require('express-handlebars')
 const mongoose = require('mongoose')
 const fileUpload = require("express-fileupload")
 const bodyParser = require("body-parser")
-const Handlebars = require("handlebars")
-const MomentHandler = require("handlebars.moment")
-
+const expressSession = require("express-session")
 
 // Controler //
 // Articles
@@ -20,10 +18,19 @@ const userRegister = require('./controllers/userRegister')
 const userLogin = require('./controllers/userLogin')
 const userLoginAuth = require('./controllers/userLoginAuth')
 
+const Handlebars = require("handlebars")
+const MomentHandler = require("handlebars.moment")
 MomentHandler.registerHelpers(Handlebars);
 
-// Port local
+// Port local //
 const port = 3000
+
+app.use(expressSession({
+    secret: 'securite',
+    name: 'biscuit',
+    resave: true,
+    saveUninitialized: true
+  }))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -31,8 +38,8 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(fileUpload())
 
-// Mongoose
-mongoose.connect('mongodb://localhost:27017/blog')
+// Mongoose //
+mongoose.connect('mongodb://localhost:27017/blog', {useNewUrlParser: true,  useUnifiedTopology: true})
 
 // Post
 
