@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const fileUpload = require("express-fileupload")
 const bodyParser = require("body-parser")
 const expressSession = require("express-session")
+const MongoStore = require('connect-mongo')
 
 // Controler //
 // Articles
@@ -24,12 +25,21 @@ MomentHandler.registerHelpers(Handlebars);
 
 // Port local //
 const port = 3000
+// Mongoose //
+mongoose.connect('mongodb://localhost:27017/blog', {useNewUrlParser: true,  useUnifiedTopology: true})
+
+const mongoStore = MongoStore(expressSession)
 
 app.use(expressSession({
     secret: 'securite',
     name: 'biscuit',
-    resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    resave: false,
+
+    store : new mongoStore ({
+        mongooseConnection: mongoose.connection
+    })
+
   }))
 
 app.use(bodyParser.json())
