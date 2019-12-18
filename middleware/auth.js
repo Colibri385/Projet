@@ -10,14 +10,5 @@ User.findById(req.session.userId, (error, user) => {
         }
         next()
 })
-    // vérifie l'utilisateur
-
-
-    // s'il est dans la base de données
-
-
-    // Sinon tu le rediriges
-
-
 
 }

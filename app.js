@@ -91,6 +91,7 @@ app.get('/', homePage) // affiche la collection
 // Page articles //
 // Ajoute articledb.
 app.get('/articles/add', auth, articleAddController)
+app.get('/articles/modif', auth, articleAddController)
 app.get('/articles/:_id', articleSingleController)
 app.post('/articles/post', auth, articleValidPost, articlePostController)
 
