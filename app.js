@@ -95,17 +95,20 @@ app.get('/user/login', redirectAuthSucces, userLogin)
 app.post('/user/loginAuth', redirectAuthSucces, userLoginAuth)
 app.get('/user/logout', userLogout)
 
+
 // Contact
 app.get('/contact', (req, res) => {
     res.render('contact')
+})
+ // si page inconnue alors aller vers fichier error 404
+app.use((req,res,)=> {
+    res.render('error404')
 })
 
 // Port du serveur
 
 app.listen(port, function () {
     console.log(`Le serveur tourne sur le port ${port}, lancé à ${new Date().toLocaleString()}`)
-
-
 })
 
 
