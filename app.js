@@ -18,6 +18,7 @@ const userCreate = require('./controllers/userCreate')
 const userRegister = require('./controllers/userRegister')
 const userLogin = require('./controllers/userLogin')
 const userLoginAuth = require('./controllers/userLoginAuth')
+const userLogout = require('./controllers/userLogout')
 
 
 // Port local //
@@ -66,9 +67,10 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 app.use('*', (req, res, next) => {
  res.locals.user = req.session.userId;
- console.log(res.locals.user);
+ // console.log(res.locals.user);
  next()
 })
+
 
 // Middleware
 const articleValidPost = require('./middleware/articleValidPost')
@@ -91,6 +93,7 @@ app.get('/user/create', redirectAuthSucces, userCreate)
 app.post('/user/register', redirectAuthSucces, userRegister)
 app.get('/user/login', redirectAuthSucces, userLogin)
 app.post('/user/loginAuth', redirectAuthSucces, userLoginAuth)
+app.get('/user/logout', userLogout)
 
 // Contact
 app.get('/contact', (req, res) => {
