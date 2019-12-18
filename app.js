@@ -50,6 +50,7 @@ app.use(bodyParser.urlencoded({
 app.use(fileUpload())
 
 const auth = require('./middleware/auth')
+const redirectAuthSucces = require('./middleware/redirectAuthSucces')
 
 
 const Handlebars = require('handlebars')
@@ -63,6 +64,11 @@ app.use(express.static('public'));
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
+app.use('*', (req, res, next) => {
+ res.locals.user = req.session.userId;
+ console.log(res.locals.user);
+ next()
+})
 
 // Middleware
 const articleValidPost = require('./middleware/articleValidPost')
@@ -81,10 +87,10 @@ app.get('/articles/:_id', articleSingleController)
 app.post('/articles/post', auth, articleValidPost, articlePostController)
 
 // Users (tu mets le chemin que tu désires) 
-app.get('/user/create', userCreate)
-app.post('/user/register', userRegister)
-app.get('/user/login', userLogin)
-app.post('/user/loginAuth', userLoginAuth)
+app.get('/user/create', redirectAuthSucces, userCreate)
+app.post('/user/register', redirectAuthSucces, userRegister)
+app.get('/user/login', redirectAuthSucces, userLogin)
+app.post('/user/loginAuth', redirectAuthSucces, userLoginAuth)
 
 // Contact
 app.get('/contact', (req, res) => {

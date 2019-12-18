@@ -1,9 +1,8 @@
 
 module.exports = (req,res) => {
 
-    console.log()
-
  res.render ('register', {
-    errors : req.flash('registerError')
+    errors : req.flash('registerError'),
+    data : req.flash('data')[0]
  })
 }

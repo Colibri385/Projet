@@ -9,8 +9,9 @@ module.exports = (req,res) => {
         if (error) {
             const registerError = Object.keys(error.errors).map(key => error.errors[key].message);
             
-            // module npm qui gère le smessage flash
+            // module npm qui gère les messages flash
             req.flash("registerError",registerError)
+            req.flash('data', req.body)
 
             return res.redirect('/user/create')
         }
