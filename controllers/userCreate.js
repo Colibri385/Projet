@@ -1,7 +1,9 @@
 
 module.exports = (req,res) => {
 
-    console.log(req.session.registerError)
-    
- res.render ('register')
+    console.log()
+
+ res.render ('register', {
+    errors : req.session.registerError
+ })
 }

@@ -1,6 +1,16 @@
 <section class="section">
     <div class="container is-fullhd">
 
+
+<div class="content">
+  <ol type="1">
+    {{#each errors}}
+    <li>{{this}}</li>
+    {{/each}}
+  </ol>
+</div>
+
+
       <form action="/user/register" method="POST" enctype="multipart/form-data">
        <div class="field">
   <label class="label">Nom</label>
@@ -39,7 +49,7 @@
     <button class="button is-link is-light">Annuler</button>
   </div>
 </div>
-    </div>
+    <//div>
     </form>
 </section>
 
