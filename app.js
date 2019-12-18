@@ -1,10 +1,9 @@
 const express = require('express')
-const app = express()
 const exphbs = require('express-handlebars')
 const mongoose = require('mongoose')
-const fileUpload = require("express-fileupload")
-const bodyParser = require("body-parser")
-const expressSession = require("express-session")
+const fileUpload = require('express-fileupload')
+const bodyParser = require('body-parser')
+const expressSession = require('express-session')
 const MongoStore = require('connect-mongo')
 
 // Controler //
@@ -19,12 +18,11 @@ const userRegister = require('./controllers/userRegister')
 const userLogin = require('./controllers/userLogin')
 const userLoginAuth = require('./controllers/userLoginAuth')
 
-const Handlebars = require("handlebars")
-const MomentHandler = require("handlebars.moment")
-MomentHandler.registerHelpers(Handlebars);
 
 // Port local //
 const port = 3000
+
+const app = express()
 // Mongoose //
 mongoose.connect('mongodb://localhost:27017/blog', {useNewUrlParser: true,  useUnifiedTopology: true})
 
@@ -48,49 +46,54 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(fileUpload())
 
-// Mongoose //
-mongoose.connect('mongodb://localhost:27017/blog', {useNewUrlParser: true,  useUnifiedTopology: true})
+const auth = require('./middleware/auth')
+
+
+const Handlebars = require('handlebars')
+const MomentHandler = require('handlebars.moment')
+MomentHandler.registerHelpers(Handlebars);
 
 // Post
-
 app.use(express.static('public'));
 
 // Route
 
-app.engine('handlebars', exphbs());
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
+// Middleware
 const articleValidPost = require('./middleware/articleValidPost')
  
  // s'il y a un post sur url 'article/post' applique le middleware
-app.use("/articles/post", articleValidPost)
+app.use('/articles/post', articleValidPost)
+// app.use('/articles/add', auth)
 
-
-// methode Get sur page d'acceuil index.handlebars "/"
-app.get("/", homePage) // affiche la collection
+// methode Get sur page d'acceuil index.handlebars '/'
+app.get('/', homePage) // affiche la collection
 
 // Page articles //
 // Ajoute articledb.
-app.get("/articles/add", articleAddController)
-app.get("/articles/:_id", articleSingleController)
-app.post("/articles/post", articlePostController)
+app.get('/articles/add', auth, articleAddController)
+app.get('/articles/:_id', articleSingleController)
+app.post('/articles/post', auth, articleValidPost, articlePostController)
 
-// Users (tu mets le chemin que tu veux) 
-app.get("/user/create", userCreate)
-app.post("/user/register", userRegister)
+// Users (tu mets le chemin que tu désires) 
+app.get('/user/create', userCreate)
+app.post('/user/register', userRegister)
 app.get('/user/login', userLogin)
 app.post('/user/loginAuth', userLoginAuth)
 
 // Contact
-app.get("/contact", (req, res) => {
-    res.render("contact")
+app.get('/contact', (req, res) => {
+    res.render('contact')
 })
-
 
 // Port du serveur
 
 app.listen(port, function () {
     console.log(`Le serveur tourne sur le port ${port}, lancé à ${new Date().toLocaleString()}`)
+
+
 })
 
 
