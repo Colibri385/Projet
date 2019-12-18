@@ -3,6 +3,6 @@ module.exports = (req,res, next) => {
     if(!req.files || !req.body.title) {
         return res.redirect("/")
     }
-    console.log("Je suis un Middleware");
+    // console.log("Je suis un Middleware");
     next()
 }

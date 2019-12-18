@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const expressSession = require('express-session')
 const MongoStore = require('connect-mongo')
 const connectFlash = require('connect-flash')
+const {stripTags} = require('./helpers/hbs')
 
 // Controler //
 // Articles
@@ -63,7 +64,12 @@ app.use(express.static('public'));
 
 // Route
 
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({
+    helpers : {
+        stripTags :stripTags
+    },
+    defaultLayout: 'main'}));
+
 app.set('view engine', 'handlebars');
 app.use('*', (req, res, next) => {
  res.locals.user = req.session.userId;
