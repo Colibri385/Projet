@@ -5,6 +5,7 @@ const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
 const expressSession = require('express-session')
 const MongoStore = require('connect-mongo')
+const connectFlash = require('connect-flash')
 
 // Controler //
 // Articles
@@ -27,6 +28,8 @@ const app = express()
 mongoose.connect('mongodb://localhost:27017/blog', {useNewUrlParser: true,  useUnifiedTopology: true})
 
 const mongoStore = MongoStore(expressSession)
+
+app.use(connectFlash())
 
 app.use(expressSession({
     secret: 'securite',
